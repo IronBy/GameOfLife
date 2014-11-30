@@ -1,0 +1,2 @@
+class CellIsOutsideOfLifeAreaError < StandardError
+end
