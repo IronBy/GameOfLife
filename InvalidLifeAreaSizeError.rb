@@ -1,0 +1,2 @@
+class InvalidLifeAreaSizeError < StandardError
+end
