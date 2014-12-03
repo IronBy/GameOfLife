@@ -16,7 +16,7 @@ module GameOfLife
         end
 
         def mark_cell_as_alive(row_index, column_index)
-            verify_is_in_life_area?(row_index, column_index)
+            verify_is_in_life_area(row_index, column_index)
             @area[row_index][column_index].is_alive = true
         end
 
@@ -55,7 +55,7 @@ module GameOfLife
             raise InvalidLifeAreaSizeError.new if width <= 0 || height <= 0
         end
 
-        def verify_is_in_life_area?(row_index, column_index)
+        def verify_is_in_life_area(row_index, column_index)
             raise CellIsOutsideOfLifeAreaError.new if !is_in_life_area?(row_index, column_index)
         end
 
