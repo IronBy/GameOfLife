@@ -1,6 +1,6 @@
 require "rspec"
 require_relative "../Game"
-require_relative "../LifeArea"
+require_relative "../life_area"
 require_relative "./shared_functions"
 
 RSpec.describe GameOfLife::Game do

@@ -1,5 +1,5 @@
 require "rspec"
-require_relative "../LifeArea"
+require_relative "../life_area"
 require_relative "./shared_functions"
 
 RSpec.shared_examples "empty area with specified size" do |width, height|
