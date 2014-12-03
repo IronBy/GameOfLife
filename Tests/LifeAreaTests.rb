@@ -1,13 +1,14 @@
 require "rspec"
 require_relative "../LifeArea"
+require_relative "./shared_functions"
 
 RSpec.shared_examples "empty area with specified size" do |width, height|
     it "creates new empty area with specified size" do
-        lifeArea = GameOfLife::LifeArea.new(width, height)
+        life_area = GameOfLife::LifeArea.new(width, height)
         
-        width.times do | rowIndex |
-            height.times do | columnIndex |
-                expect(lifeArea.is_cell_alive?(rowIndex, columnIndex)).to be_falsy
+        width.times do |row_index|
+            height.times do |column_index|
+                expect(life_area.is_cell_alive?(row_index, column_index)).to be_falsy
             end
         end
     end
@@ -25,10 +26,10 @@ RSpec.describe GameOfLife::LifeArea do
             width = 3
             height = 2
             
-            lifeArea = GameOfLife::LifeArea.new(width, height)
+            life_area = GameOfLife::LifeArea.new(width, height)
             
-            expect(lifeArea.width).to eq(width)
-            expect(lifeArea.height).to eq(height)
+            expect(life_area.width).to eq(width)
+            expect(life_area.height).to eq(height)
         end
 
         include_examples("wrong area size", -1, 1)
@@ -43,13 +44,13 @@ end
 
 RSpec.shared_context "of empty area with size 6 x 6" do
     before {
-        @lifeArea = GameOfLife::LifeArea.new(6, 6)
+        @life_area = GameOfLife::LifeArea.new(6, 6)
     }
 end
 
-RSpec.shared_examples "cell outside of life area" do |rowIndex, columnIndex|
+RSpec.shared_examples "cell outside of life area" do |row_index, column_index|
     it "raises error when cell is outside of life area" do
-        expect { @lifeArea.mark_cell_as_alive(rowIndex, columnIndex) }.to raise_error(CellIsOutsideOfLifeAreaError)
+        expect { @life_area.mark_cell_as_alive(row_index, column_index) }.to raise_error(CellIsOutsideOfLifeAreaError)
     end
 end
 
@@ -65,12 +66,12 @@ RSpec.describe GameOfLife::LifeArea do
 
     describe "#is_cell_alive?" do
         it "returns true for alive cells otherwise false" do
-            rowIndex = 1
-            columnIndex = 2
+            row_index = 1
+            column_index = 2
 
-            @lifeArea.mark_cell_as_alive(rowIndex, columnIndex)
+            @life_area.mark_cell_as_alive(row_index, column_index)
             
-            expect(@lifeArea.is_cell_alive?(rowIndex, columnIndex)).to be_truthy
+            expect(@life_area.is_cell_alive?(row_index, column_index)).to be true
         end
     end
 end
@@ -79,21 +80,18 @@ RSpec.shared_context "of area with size 6 x 6 and alive square of size 3 x 3" do
     include_context "of empty area with size 6 x 6"
 
     before {
-        @lifeArea.mark_cell_as_alive(0, 0)
-        @lifeArea.mark_cell_as_alive(0, 1)
-        @lifeArea.mark_cell_as_alive(0, 2)
-        @lifeArea.mark_cell_as_alive(1, 0)
-        @lifeArea.mark_cell_as_alive(1, 1)
-        @lifeArea.mark_cell_as_alive(1, 2)
-        @lifeArea.mark_cell_as_alive(2, 0)
-        @lifeArea.mark_cell_as_alive(2, 1)
-        @lifeArea.mark_cell_as_alive(2, 2)
+        square = <<-eof
+000
+000
+000
+        eof
+        setup_zero_generation(@life_area, square)
     }
 end
 
-RSpec.shared_examples "alive neighbours counting" do | rowIndex, columnIndex, expectedNeighboursCount |
+RSpec.shared_examples "alive neighbours counting" do |row_index, column_index, expectedNeighboursCount|
     it "returns count of alive neighbour cells" do
-        expect(@lifeArea.get_alive_neighbours_count(rowIndex, columnIndex)).to eq(expectedNeighboursCount)
+        expect(@life_area.get_alive_neighbours_count(row_index, column_index)).to eq(expectedNeighboursCount)
     end
 end
 

@@ -15,33 +15,33 @@ module GameOfLife
             @area = create_empty_area(width, height)
         end
 
-        def mark_cell_as_alive(rowIndex, columnIndex)
-            verify_is_in_life_area?(rowIndex, columnIndex)
-            @area[rowIndex][columnIndex].is_alive = true
+        def mark_cell_as_alive(row_index, column_index)
+            verify_is_in_life_area?(row_index, column_index)
+            @area[row_index][column_index].is_alive = true
         end
 
-        def is_cell_alive?(rowIndex, columnIndex)
-            return is_in_life_area?(rowIndex, columnIndex) &&
-                @area[rowIndex][columnIndex].is_alive
+        def is_cell_alive?(row_index, column_index)
+            return is_in_life_area?(row_index, column_index) &&
+                @area[row_index][column_index].is_alive
         end
 
-        def get_alive_neighbours_count(rowIndex, columnIndex)
-            return count_aliveness(rowIndex - 1, columnIndex - 1) +
-                count_aliveness(rowIndex - 1, columnIndex) +
-                count_aliveness(rowIndex - 1, columnIndex + 1) +
-                count_aliveness(rowIndex , columnIndex - 1) +
-                count_aliveness(rowIndex, columnIndex + 1) +
-                count_aliveness(rowIndex + 1, columnIndex - 1) +
-                count_aliveness(rowIndex + 1, columnIndex) +
-                count_aliveness(rowIndex + 1, columnIndex + 1)
+        def get_alive_neighbours_count(row_index, column_index)
+            return count_aliveness(row_index - 1, column_index - 1) +
+                count_aliveness(row_index - 1, column_index) +
+                count_aliveness(row_index - 1, column_index + 1) +
+                count_aliveness(row_index , column_index - 1) +
+                count_aliveness(row_index, column_index + 1) +
+                count_aliveness(row_index + 1, column_index - 1) +
+                count_aliveness(row_index + 1, column_index) +
+                count_aliveness(row_index + 1, column_index + 1)
         end
 
-        def mark_dead_in_next_generation(rowIndex, columnIndex)
-            @area[rowIndex][columnIndex].is_alive_in_next_generation = false
+        def mark_dead_in_next_generation(row_index, column_index)
+            @area[row_index][column_index].is_alive_in_next_generation = false
         end
 
-        def mark_alive_in_next_generation(rowIndex, columnIndex)
-            @area[rowIndex][columnIndex].is_alive_in_next_generation = true
+        def mark_alive_in_next_generation(row_index, column_index)
+            @area[row_index][column_index].is_alive_in_next_generation = true
         end
 
         def upgrade_generation
@@ -55,22 +55,22 @@ module GameOfLife
             raise InvalidLifeAreaSizeError.new if width <= 0 || height <= 0
         end
 
-        def verify_is_in_life_area?(rowIndex, columnIndex)
-            raise CellIsOutsideOfLifeAreaError.new if !is_in_life_area?(rowIndex, columnIndex)
+        def verify_is_in_life_area?(row_index, column_index)
+            raise CellIsOutsideOfLifeAreaError.new if !is_in_life_area?(row_index, column_index)
         end
 
-        def is_in_life_area?(rowIndex, columnIndex)
-            return rowIndex >= 0 && rowIndex < @height &&
-                columnIndex >= 0 && columnIndex < @width
+        def is_in_life_area?(row_index, column_index)
+            return row_index >= 0 && row_index < @height &&
+                column_index >= 0 && column_index < @width
         end
 
         def create_empty_area(width, height)
             Array.new(height) { Array.new(width) { Cell.new } }
         end
 
-        def count_aliveness(rowIndex, columnIndex)
-            return 0 if !is_in_life_area?(rowIndex, columnIndex)
-            return @area[rowIndex][columnIndex].is_alive ? 1 : 0
+        def count_aliveness(row_index, column_index)
+            return 0 if !is_in_life_area?(row_index, column_index)
+            return @area[row_index][column_index].is_alive ? 1 : 0
         end
     end
 end
