@@ -1,7 +1,3 @@
-require_relative "./invalid_life_area_size_error"
-require_relative "./cell_is_outside_of_life_area_error"
-require_relative "./cell"
-
 module GameOfLife
   class LifeArea
     attr_reader :width

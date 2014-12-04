@@ -1,4 +1,9 @@
 module GameOfLife
+
+  CellIsOutsideOfLifeAreaError = Class.new(StandardError)
+  InvalidLifeAreaSizeError = Class.new(StandardError)
+  Cell = Class.new(Struct.new :is_alive, :is_alive_in_next_generation)
+
   class Game
     attr_reader :area
 

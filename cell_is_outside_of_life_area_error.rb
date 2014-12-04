@@ -1,2 +1,0 @@
-class CellIsOutsideOfLifeAreaError < StandardError
-end
