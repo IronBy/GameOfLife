@@ -1,72 +1,63 @@
 module GameOfLife
-  class LifeArea
-    attr_reader :width
-    attr_reader :height
+  class LifeArea < Struct.new :width, :height
 
     def initialize(width, height)
-      verify_area_size(width, height)
-      @width = width
-      @height = height
+      fail InvalidLifeAreaSizeError if width <= 0 || height <= 0
+      super
 
       @area = create_empty_area(width, height)
     end
 
     def mark_cell_as_alive(row_index, column_index)
       verify_is_in_life_area(row_index, column_index)
-      @area[row_index][column_index].is_alive = true
+      @area[row_index][column_index].alive = true
+      self
     end
 
-    def is_cell_alive?(row_index, column_index)
-      return is_in_life_area?(row_index, column_index) &&
-        @area[row_index][column_index].is_alive
+    def cell_alive?(row_index, column_index)
+      in_life_area?(row_index, column_index) && @area[row_index][column_index].alive
     end
 
     def get_alive_neighbours_count(row_index, column_index)
-      return count_aliveness(row_index - 1, column_index - 1) +
-        count_aliveness(row_index - 1, column_index) +
-        count_aliveness(row_index - 1, column_index + 1) +
-        count_aliveness(row_index , column_index - 1) +
-        count_aliveness(row_index, column_index + 1) +
-        count_aliveness(row_index + 1, column_index - 1) +
-        count_aliveness(row_index + 1, column_index) +
-        count_aliveness(row_index + 1, column_index + 1)
+      (-1..1).map do |row|
+        (-1..1).map do |column|
+          [row, column].all?(&:zero?) ? 0 : count_aliveness(row_index + row, column_index + column)
+        end.sum
+      end.sum
     end
 
-    def mark_dead_in_next_generation(row_index, column_index)
-      @area[row_index][column_index].is_alive_in_next_generation = false
-    end
-
-    def mark_alive_in_next_generation(row_index, column_index)
-      @area[row_index][column_index].is_alive_in_next_generation = true
+    def mark_in_next_generation(state, row_index, column_index)
+      self.tap { @area[row_index][column_index].alive_in_next_generation = state }
     end
 
     def upgrade_generation
-      @area.each { |row|
-        row.each { |cell| cell.is_alive = cell.is_alive_in_next_generation}
-      }
+      height.times do |row_index|
+        width.times do |column_index|
+          mark_in_next_generation(yield(cell_alive?(row_index, column_index), [row_index, column_index]), row_index, column_index)
+        end
+      end
+
+      @area.each { |row| row.each { |cell| cell.alive = cell.alive_in_next_generation } }
+      self
     end
 
     private
-    def verify_area_size(width, height)
-      raise InvalidLifeAreaSizeError.new if width <= 0 || height <= 0
-    end
 
     def verify_is_in_life_area(row_index, column_index)
-      raise CellIsOutsideOfLifeAreaError.new if !is_in_life_area?(row_index, column_index)
+      fail CellIsOutsideOfLifeAreaError if !in_life_area?(row_index, column_index)
     end
 
-    def is_in_life_area?(row_index, column_index)
-      return row_index >= 0 && row_index < @height &&
-        column_index >= 0 && column_index < @width
+    def in_life_area?(row_index, column_index)
+      (0...height).cover?(row_index) && (0...width).cover?(column_index)
     end
 
     def create_empty_area(width, height)
-      Array.new(height) { Array.new(width) { Cell.new } }
+      Array.new(height) { Array.new(width) { Cell.new(false, false) } }
     end
 
     def count_aliveness(row_index, column_index)
-      return 0 if !is_in_life_area?(row_index, column_index)
-      return @area[row_index][column_index].is_alive ? 1 : 0
+      return 0 unless in_life_area?(row_index, column_index)
+      @area[row_index][column_index].alive ? 1 : 0
     end
   end
 end

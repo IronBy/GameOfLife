@@ -1,51 +1,35 @@
-module GameOfLife
+require_relative 'life_area'
 
+module GameOfLife
   CellIsOutsideOfLifeAreaError = Class.new(StandardError)
   InvalidLifeAreaSizeError = Class.new(StandardError)
-  Cell = Class.new(Struct.new :is_alive, :is_alive_in_next_generation)
+  Cell = Class.new(Struct.new :alive, :alive_in_next_generation)
 
   class Game
-    attr_reader :area
-
     def initialize(area)
-      raise ArgumentError.new if area == nil
+      fail ArgumentError, "area cannot be nil" unless area
       @area = area
     end
 
     def evolve
-      @area.height.times { |row_index|
-        @area.width.times { |column_index|
-          if (@area.is_cell_alive?(row_index, column_index))
-            if (cell_dies?(row_index, column_index))
-              @area.mark_dead_in_next_generation(row_index, column_index)
-            else
-              @area.mark_alive_in_next_generation(row_index, column_index)
-            end
-          else
-            if (cell_revives?(row_index, column_index))
-              @area.mark_alive_in_next_generation(row_index, column_index)
-            else
-              @area.mark_dead_in_next_generation(row_index, column_index)
-            end
-          end
-        }
-      }
-
-      @area.upgrade_generation
+      @area.upgrade_generation do |alive, (row_index, column_index)|
+        if alive
+          !cell_dies?(row_index, column_index)
+        else
+          cell_revives?(row_index, column_index)
+        end
+      end
     end
 
     private
-    def create_empty_area(width, height)
-      Array.new(height) { Array.new(width) { 0 } }
-    end
 
     def cell_dies?(row_index, column_index)
       alive_neighbours_count = @area.get_alive_neighbours_count(row_index, column_index)
-      return alive_neighbours_count < 2 || alive_neighbours_count > 3
+      alive_neighbours_count < 2 || alive_neighbours_count > 3
     end
 
     def cell_revives?(row_index, column_index)
-      return @area.get_alive_neighbours_count(row_index, column_index) == 3
+      @area.get_alive_neighbours_count(row_index, column_index) == 3
     end
   end
 end
