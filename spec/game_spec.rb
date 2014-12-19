@@ -4,12 +4,12 @@ require_relative "../Game"
 def parse_sample_file(file_name, generations)
   generations_added = 0
   File.open(File.join(File.dirname(__FILE__), file_name)) do |file|
+    generations << ""
     file.each() do |line|
       if (line.chomp.length > 0)
-        generations[generations_added] = "" if generations[generations_added] == nil
-        generations[generations_added] += line
+        generations[generations.length - 1] += line
       else
-        generations_added += 1
+        generations << ""
       end
     end
   end
