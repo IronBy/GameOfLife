@@ -2,7 +2,6 @@ require_relative "spec_helper"
 require_relative "../Game"
 
 def parse_sample_file(file_name, generations)
-  generations_added = 0
   File.open(File.join(File.dirname(__FILE__), file_name)) do |file|
     generations << ""
     file.each() do |line|
