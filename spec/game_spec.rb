@@ -1,19 +1,6 @@
 require_relative "spec_helper"
 require_relative "../Game"
 
-def parse_sample_file(file_name, generations)
-  File.open(File.join(File.dirname(__FILE__), file_name)) do |file|
-    generations << ""
-    file.each() do |line|
-      if (line.chomp.length > 0)
-        generations[generations.length - 1] += line
-      else
-        generations << ""
-      end
-    end
-  end
-end
-
 RSpec.describe GameOfLife::Game do
   describe "#initialize" do
     it "raises error if life area is nil" do
@@ -23,25 +10,23 @@ RSpec.describe GameOfLife::Game do
 end
 
 RSpec.describe GameOfLife::Game do
-  let(:area) { GameOfLife::LifeArea.new(6, 6) }
-  let(:game) { GameOfLife::Game.new(area) }
-  let(:generations) { [] }
+  let(:file_name) { "" }
 
-  after { perform_generation_change_test(game, area, generations) }
+  after { perform_generation_change_test(6, 6, file_name) }
 
   it "does nothing with Block in the first generation" do
-    parse_sample_file("block_sample.txt", generations)
+    file_name << "block_sample.txt"
   end
 
   it "does nothing with Beehive in the first generation" do
-    parse_sample_file("beehive_sample.txt", generations)
+    file_name << "beehive_sample.txt"
   end
 
   it "oscillates with line of three dots (period 2)" do
-    parse_sample_file("three_cells_line_sample.txt", generations)
+    file_name << "three_cells_line_sample.txt"
   end
 
   it "oscillates with Beacon (period 2)" do
-    parse_sample_file("beacon_sample.txt", generations)
+    file_name << "beacon_sample.txt"
   end
 end
