@@ -10,7 +10,6 @@ RSpec.describe GameOfLife::Game do
 end
 
 RSpec.describe GameOfLife::Game do
-
   {
     "block_sample.txt" => "does nothing with Block in the first generation",
     "beehive_sample.txt" => "does nothing with Beehive in the first generation",
