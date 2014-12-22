@@ -10,23 +10,15 @@ RSpec.describe GameOfLife::Game do
 end
 
 RSpec.describe GameOfLife::Game do
-  let(:file_name) { "" }
 
-  after { perform_generation_change_test(6, 6, file_name) }
-
-  it "does nothing with Block in the first generation" do
-    file_name << "block_sample.txt"
-  end
-
-  it "does nothing with Beehive in the first generation" do
-    file_name << "beehive_sample.txt"
-  end
-
-  it "oscillates with line of three dots (period 2)" do
-    file_name << "three_cells_line_sample.txt"
-  end
-
-  it "oscillates with Beacon (period 2)" do
-    file_name << "beacon_sample.txt"
+  {
+    "block_sample.txt" => "does nothing with Block in the first generation",
+    "beehive_sample.txt" => "does nothing with Beehive in the first generation",
+    "three_cells_line_sample.txt" => "oscillates with line of three dots (period 2)",
+    "beacon_sample.txt" => "oscillates with Beacon (period 2)"
+  }.each do |file_name, message|
+    it message do
+      perform_generation_change_test(6, 6, file_name)
+    end
   end
 end
